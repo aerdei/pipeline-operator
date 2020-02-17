@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pipeline-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: pipeline-operator
+  template:
+    metadata:
+      labels:
+        name: pipeline-operator
+    spec:
+      serviceAccountName: pipeline-operator
+      containers:
+        - name: pipeline-operator
+          # Replace this with the built image name
+          image: REPLACE_IMAGE
+          command:
+          - pipeline-operator
+          imagePullPolicy: Always
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "pipeline-operator"
